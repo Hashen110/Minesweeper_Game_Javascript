@@ -6,8 +6,8 @@
     <title>Minesweeper</title>
     <style>
         .game {
-            width: 75vw;
-            height: 75vh;
+            width: 85vw;
+            height: 85vh;
             position: absolute;
             top: 0;
             right: 0;
@@ -48,8 +48,9 @@
 <main class="game">
     <div class="container-fluid h-100">
         <div class="row text-center" style="height: 7.5%;">
-            <div class="col"><span class="h2">Time: <span id="time" class="text-success">0</span></span></div>
-            <div class="col"><span class="h2 text-danger">Minesweeper</span></div>
+            <div class="col"><span class="h2 text-success">Time: <span id="time">0</span></span></div>
+            <div class="col"><span class="h1 text-danger">Minesweeper</span></div>
+            <div class="col"><span class="h2 text-warning">Mines: <span id="mines"></span></span></div>
         </div>
         <table id="board" class="table table-bordered text-center w-100" style="height: 90%;"></table>
         <div class="row text-center justify-content-center" style="height: 2.5%;">

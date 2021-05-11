@@ -1,9 +1,9 @@
 const board = document.getElementById('board')
-const boxes = 10;
-let time = 0;
-let timeInterval = null;
+const boxes = 6;
+let time = 0, timeInterval = null, isGameStarted = false;
 
 function start() {
+    document.getElementById('mines').innerText = String(boxes)
     timeInterval = setInterval(function () {
         document.getElementById('time').innerText = String(++time);
     }, 1000);
@@ -19,29 +19,35 @@ function start() {
             cell.setAttributeNode(mine);
         }
     }
-    generateMines()
 }
 
 function onCellClick(cell) {
     cell.onclick = undefined
     cell.style.cursor = 'default'
     cell.className = 'clicked'
-    if (cell.getAttribute("data-mine") === "true") {
-        showMines();
-        gameOver(false);
+    if (!isGameStarted) {
+        isGameStarted = true
+        generateMines()
+        cell.innerHTML = '<span></span>'
     } else {
-        let mines = 0;
-        let row = cell.parentNode.rowIndex;
-        let col = cell.cellIndex;
-        for (let i = Math.max(row - 1, 0); i <= Math.min(row + 1, boxes - 1); i++) {
-            for (let j = Math.max(col - 1, 0); j <= Math.min(col + 1, boxes - 1); j++) {
-                if (board.rows[i].cells[j].getAttribute("data-mine") === "true") mines++;
+        if (cell.getAttribute("data-mine") === "true") {
+            gameOver(false);
+        } else {
+            let mines = 0;
+            let row = cell.parentNode.rowIndex;
+            let col = cell.cellIndex;
+            for (let i = Math.max(row - 1, 0); i <= Math.min(row + 1, boxes - 1); i++) {
+                for (let j = Math.max(col - 1, 0); j <= Math.min(col + 1, boxes - 1); j++) {
+                    if (board.rows[i].cells[j].getAttribute("data-mine") === "true") mines++;
+                }
             }
+            if (mines !== 0) {
+                cell.innerHTML = '<span>' + mines + '</span>';
+            } else {
+                cell.innerHTML = '<span></span>';
+            }
+            isFinished()
         }
-        if (mines !== 0) {
-            cell.innerHTML = '<span>' + mines + '</span>';
-        }
-        isFinished()
     }
 }
 
@@ -61,12 +67,11 @@ function generateMines() {
         let col = Math.floor(Math.random() * boxes);
         let cell = board.rows[row].cells[col];
         cell.setAttribute('data-mine', 'true')
-        cell.innerHTML = '<span><img src="assets/img/bomb.svg"></span>'
-        cell.style.color = 'red'
+        cell.innerHTML = '<span><img src="assets/img/bomb.svg" alt="bomb"></span>'
     }
 }
 
-function showMines() {
+function gameOver(isWin) {
     for (let i = 0; i < boxes; i++) {
         for (let j = 0; j < boxes; j++) {
             let cell = board.rows[i].cells[j];
@@ -75,9 +80,6 @@ function showMines() {
             }
         }
     }
-}
-
-function gameOver(isWin) {
     clearInterval(timeInterval)
     let msg = 'You Win...!';
     if (!isWin) msg = 'You lose...!'
